@@ -6,6 +6,15 @@ const dbPath = path.join(__dirname, '..', 'paradise.db');
 const schemaPath = path.join(__dirname, '..', 'database', 'schema.sql');
 
 console.log('🔄 Initializing database...');
+console.log('📁 Database path:', dbPath);
+console.log('📄 Schema path:', schemaPath);
+
+// Create database directory if it doesn't exist
+const dbDir = path.dirname(dbPath);
+if (!fs.existsSync(dbDir)) {
+    console.log('📂 Creating database directory...');
+    fs.mkdirSync(dbDir, { recursive: true });
+}
 
 // Check if database exists
 const dbExists = fs.existsSync(dbPath);
@@ -17,6 +26,12 @@ const db = new sqlite3.Database(dbPath, (err) => {
     }
     console.log('✅ Connected to SQLite database');
 });
+
+// Check if schema file exists
+if (!fs.existsSync(schemaPath)) {
+    console.error('❌ Schema file not found:', schemaPath);
+    process.exit(1);
+}
 
 // Read and execute schema
 const schema = fs.readFileSync(schemaPath, 'utf8');
