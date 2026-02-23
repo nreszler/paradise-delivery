@@ -7,7 +7,8 @@
     "start": "node scripts/init-db.js && node server.js",
     "dev": "node scripts/init-db.js && nodemon server.js",
     "test": "node test-integration.js",
-    "init-db": "node scripts/init-db.js"
+    "init-db": "node scripts/init-db.js",
+    "postinstall": "npm rebuild sqlite3"
   },
   "dependencies": {
     "express": "^4.18.2",
