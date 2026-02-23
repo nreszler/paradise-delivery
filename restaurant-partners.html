@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Partners - Paradise Delivery</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #0d9488, #14b8a6);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .header-logo {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .header-text h1 {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .header-text p {
+            font-size: 12px;
+            opacity: 0.85;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, #dc2626, #ea580c);
+            border-radius: 16px;
+            padding: 48px;
+            color: white;
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .hero h2 {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        .hero p {
+            font-size: 18px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 24px;
+        }
+
+        /* Commission Comparison */
+        .comparison-section {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: #111827;
+            text-align: center;
+        }
+
+        .commission-compare {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 640px) {
+            .commission-compare {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .commission-box {
+            background: #f9fafb;
+            border-radius: 16px;
+            padding: 32px;
+            text-align: center;
+            border: 3px solid #e5e7eb;
+        }
+
+        .commission-box.highlight {
+            border-color: #0d9488;
+            background: #f0fdfa;
+        }
+
+        .commission-box h4 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #4b5563;
+        }
+
+        .commission-box.highlight h4 {
+            color: #0d9488;
+        }
+
+        .commission-percent {
+            font-size: 64px;
+            font-weight: 800;
+            margin: 16px 0;
+        }
+
+        .commission-box .commission-percent {
+            color: #9ca3af;
+        }
+
+        .commission-box.highlight .commission-percent {
+            color: #0d9488;
+        }
+
+        .commission-box p {
+            color: #6b7280;
+            margin-bottom: 16px;
+        }
+
+        .savings-box {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 24px;
+            text-align: center;
+        }
+
+        .savings-box h3 {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        /* Calculator */
+        .calculator-section {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .calculator-box {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #0d9488;
+        }
+
+        .calc-result {
+            background: #f0fdf4;
+            border: 2px solid #86efac;
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 24px;
+        }
+
+        .calc-result h4 {
+            color: #166534;
+            margin-bottom: 16px;
+            font-size: 18px;
+        }
+
+        .calc-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #86efac;
+        }
+
+        .calc-row:last-child {
+            border-bottom: none;
+            font-weight: 700;
+            font-size: 18px;
+            color: #059669;
+            margin-top: 8px;
+            padding-top: 16px;
+            border-top: 2px solid #86efac;
+        }
+
+        /* Features */
+        .features-section {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .feature-card {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 24px;
+            border-left: 4px solid #0d9488;
+        }
+
+        .feature-card h4 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #111827;
+        }
+
+        .feature-card p {
+            color: #6b7280;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* Application Form */
+        .apply-section {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        @media (max-width: 640px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #0d9488;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #0d9488, #14b8a6);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s;
+            margin-top: 16px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(13,148,136,0.3);
+        }
+
+        /* Footer */
+        .footer {
+            background: #1f2937;
+            color: #9ca3af;
+            padding: 32px;
+            text-align: center;
+            margin-top: 48px;
+        }
+
+        .footer a {
+            color: #14b8a6;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <a href="app-final.html" class="header-brand">
+            <div class="header-logo">🚀</div>
+            <div class="header-text">
+                <h1>Paradise Delivery</h1>
+                <p>Restaurant Partners</p>
+            </div>
+        </a>
+    </header>
+
+    <div class="container">
+        <!-- Hero -->
+        <div class="hero">
+            <h2>👨‍🍳 Partner With Paradise</h2>
+            <p>Keep more of your hard-earned money. Lower commission, local customers, real support. Join the delivery platform that puts Paradise restaurants first.</p>
+        </div>
+
+        <!-- Commission Comparison -->
+        <div class="comparison-section">
+            <h2 class="section-title">💰 Keep More of Every Order</h2>
+            
+            <div class="commission-compare">
+                <div class="commission-box">
+                    <h4>DoorDash</h4>
+                    <div class="commission-percent">30%</div>
+                    <p>Commission per order</p>
+                    <p style="font-size: 14px;">On a $100 order, you keep $70</p>
+                </div>
+                
+                <div class="commission-box highlight">
+                    <h4>Paradise Delivery</h4>
+                    <div class="commission-percent">18%</div>
+                    <p>Commission per order</p>
+                    <p style="font-size: 14px;">On a $100 order, you keep $82</p>
+                </div>
+            </div>
+            
+            <div class="savings-box">
+                <h3>Keep $12 more per $100 order</h3>
+                <p>That's 40% more profit compared to DoorDash</p>
+            </div>
+        </div>
+
+        <!-- Calculator -->
+        <div class="calculator-section">
+            <h2 class="section-title">🧮 See Your Savings</h2>
+            
+            <div class="calculator-box">
+                <div class="input-group">
+                    <label for="monthlyRevenue">Average Monthly Delivery Revenue</label>
+                    <input type="number" id="monthlyRevenue" placeholder="e.g., 5000" oninput="calculateSavings()">
+                </div>
+                
+                <div class="calc-result" id="calcResult" style="display: none;">
+                    <h4>Your Monthly Comparison</h4>
+                    <div class="calc-row">
+                        <span>DoorDash (30%)</span>
+                        <span id="ddCommission">$0</span>
+                    </div>
+                    <div class="calc-row">
+                        <span>Paradise (18%)</span>
+                        <span id="pdCommission">$0</span>
+                    </div>
+                    <div class="calc-row">
+                        <span>💰 You Save with Paradise</span>
+                        <span id="savings">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features -->
+        <div class="features-section">
+            <h2 class="section-title">✨ Why Partner With Us</h2>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h4>💵 Lower Commission</h4>
+                    <p>18% vs their 30%. That's 40% more profit in your pocket on every single order.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h4>🏠 Local Customers</h4>
+                    <p>We focus on Paradise and surrounding areas. Your neighbors ordering from you, not tourists.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h4>💬 Real Support</h4>
+                    <p>Text or call us anytime. We're based right here in Paradise. No outsourced call centers.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h4>⚡ Fast Setup</h4>
+                    <p>Get live in 48 hours. We'll photograph your menu, set everything up, handle the tech.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h4>📱 Easy Dashboard</h4>
+                    <p>Update your menu, hours, and specials anytime from your phone or computer.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h4>🚗 Reliable Drivers</h4>
+                    <p>We pay our drivers well ($5 base + $0.60/mile), so they care about your food and customers.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- How It Works -->
+        <div class="features-section">
+            <h2 class="section-title">📋 How It Works</h2>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+                <div style="text-align: center; padding: 24px;">
+                    <div style="font-size: 48px; margin-bottom: 12px;">1️⃣</div>
+                    <h4 style="font-weight: 600; margin-bottom: 8px;">Apply</h4>
+                    <p style="color: #6b7280; font-size: 14px;">Fill out the form below. We'll review within 24 hours.</p>
+                </div>
+                
+                <div style="text-align: center; padding: 24px;">
+                    <div style="font-size: 48px; margin-bottom: 12px;">2️⃣</div>
+                    <h4 style="font-weight: 600; margin-bottom: 8px;">Setup</h4>
+                    <p style="color: #6b7280; font-size: 14px;">We photograph your menu and build your page.</p>
+                </div>
+                
+                <div style="text-align: center; padding: 24px;">
+                    <div style="font-size: 48px; margin-bottom: 12px;">3️⃣</div>
+                    <h4 style="font-weight: 600; margin-bottom: 8px;">Go Live</h4>
+                    <p style="color: #6b7280; font-size: 14px;">Start receiving orders in as little as 48 hours.</p>
+                </div>
+                
+                <div style="text-align: center; padding: 24px;">
+                    <div style="font-size: 48px; margin-bottom: 12px;">4️⃣</div>
+                    <h4 style="font-weight: 600; margin-bottom: 8px;">Get Paid</h4>
+                    <p style="color: #6b7280; font-size: 14px;">Weekly direct deposit. Keep 82% of every order.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Application Form -->
+        <div class="apply-section">
+            <h2 class="section-title">🚀 Apply to Partner</h2>
+            
+            <form id="restaurantForm" onsubmit="handleSubmit(event)">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="restaurantName">Restaurant Name</label>
+                        <input type="text" id="restaurantName" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="ownerName">Owner/Manager Name</label>
+                        <input type="text" id="ownerName" name="ownerName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Phone</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label for="address">Restaurant Address</label>
+                        <input type="text" id="address" name="address" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cuisine">Cuisine Type</label>
+                        <select id="cuisine" name="cuisine" required>
+                            <option value="">Select cuisine</option>
+                            <option value="Mexican">Mexican</option>
+                            <option value="Italian">Italian</option>
+                            <option value="Chinese">Chinese</option>
+                            <option value="American">American</option>
+                            <option value="Pizza">Pizza</option>
+                            <option value="Sushi">Sushi/Japanese</option>
+                            <option value="Thai">Thai</option>
+                            <option value="Indian">Indian</option>
+                            <option value="Mediterranean">Mediterranean</option>
+                            <option value="BBQ">BBQ</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="avgOrder">Average Order Value</label>
+                        <select id="avgOrder" name="avgOrder">
+                            <option value="">Select range</option>
+                            <option value="under15">Under $15</option>
+                            <option value="15-25">$15 - $25</option>
+                            <option value="25-35">$25 - $35</option>
+                            <option value="35-50">$35 - $50</option>
+                            <option value="over50">Over $50</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label for="currentDelivery">Do you currently offer delivery?</label>
+                        <select id="currentDelivery" name="currentDelivery">
+                            <option value="">Select</option>
+                            <option value="no">No, we don't deliver</option>
+                            <option value="inhouse">Yes, with our own drivers</option>
+                            <option value="doordash">Yes, through DoorDash</option>
+                            <option value="uber">Yes, through Uber Eats</option>
+                            <option value="multiple">Yes, multiple platforms</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label for="message">Tell us about your restaurant</label>
+                        <textarea id="message" name="message" placeholder="What's your specialty? Any questions for us?"></textarea>
+                    </div>
+                </div>
+                
+                <button type="submit" class="submit-btn">Submit Application</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>Questions? Call or text (530) 783-7148</p>
+        <p style="margin-top: 8px;">Based in Paradise, CA • Serving Butte County</p>
+        <p style="margin-top: 16px; font-size: 14px;">
+            <a href="terms.html">Terms of Service</a> • 
+            <a href="privacy.html">Privacy Policy</a> • 
+            <a href="prop22-disclosure.html">Prop 22 Disclosure</a>
+        </p>
+    </div>
+
+    <script>
+        function calculateSavings() {
+            const revenue = parseFloat(document.getElementById('monthlyRevenue').value) || 0;
+            const ddCommission = revenue * 0.30;
+            const pdCommission = revenue * 0.18;
+            const savings = ddCommission - pdCommission;
+            
+            if (revenue > 0) {
+                document.getElementById('ddCommission').textContent = '$' + ddCommission.toFixed(2);
+                document.getElementById('pdCommission').textContent = '$' + pdCommission.toFixed(2);
+                document.getElementById('savings').textContent = '$' + savings.toFixed(2);
+                document.getElementById('calcResult').style.display = 'block';
+            } else {
+                document.getElementById('calcResult').style.display = 'none';
+            }
+        }
+        
+        async function handleSubmit(event) {
+            event.preventDefault();
+            
+            const submitBtn = event.target.querySelector('.submit-btn');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Submitting...';
+            submitBtn.disabled = true;
+            
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData);
+            
+            try {
+                const response = await fetch('/api/restaurants/apply', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showSuccessModal();
+                    event.target.reset();
+                } else {
+                    alert('Error: ' + (result.error || 'Something went wrong. Please try again.'));
+                }
+            } catch (error) {
+                console.error('Error submitting application:', error);
+                alert('Network error. Please check your connection and try again.');
+            } finally {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+        
+        function showSuccessModal() {
+            const existingModal = document.getElementById('successModal');
+            if (existingModal) existingModal.remove();
+            
+            const modalHTML = `
+                <div id="successModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px;">
+                    <div style="background: white; border-radius: 16px; max-width: 500px; width: 100%; padding: 40px; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.25);">
+                        <div style="font-size: 64px; margin-bottom: 16px;">🎉</div>
+                        <h2 style="font-size: 24px; font-weight: 700; margin-bottom: 16px; color: #111827;">Application Received!</h2>
+                        <p style="color: #6b7280; margin-bottom: 24px; line-height: 1.6;">
+                            Thank you for your interest in partnering with Paradise Delivery!<br><br>
+                            We'll review your application and contact you within 24 hours to discuss next steps.
+                        </p>
+                        <div style="background: #f0fdf4; border-radius: 12px; padding: 16px; margin-bottom: 24px;">
+                            <p style="color: #166534; font-size: 14px; margin: 0;">
+                                <strong>What happens next?</strong><br>
+                                1. We'll review your application<br>
+                                2. Schedule a meeting to discuss partnership<br>
+                                3. Photograph your menu<br>
+                                4. Go live within 48 hours!
+                            </p>
+                        </div>
+                        <button onclick="closeSuccessModal()" style="background: linear-gradient(135deg, #0d9488, #14b8a6); color: white; border: none; padding: 12px 32px; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                            Got it!
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+        }
+        
+        function closeSuccessModal() {
+            const modal = document.getElementById('successModal');
+            if (modal) modal.remove();
+        }
+    </script>
+</body>
+</html>

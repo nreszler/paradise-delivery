@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Portal - Paradise Delivery</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #0d9488, #14b8a6);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .header-logo {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .header-text h1 {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .header-text p {
+            font-size: 12px;
+            opacity: 0.85;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, #1e293b, #334155);
+            border-radius: 16px;
+            padding: 48px;
+            color: white;
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .hero h2 {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        .hero p {
+            font-size: 18px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 24px;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 48px;
+            margin-top: 32px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: #14b8a6;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        /* Pay Structure */
+        .pay-section {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: #111827;
+        }
+
+        .pay-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+        }
+
+        .pay-card {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            border: 2px solid #e5e7eb;
+        }
+
+        .pay-card.highlight {
+            border-color: #0d9488;
+            background: #f0fdfa;
+        }
+
+        .pay-amount {
+            font-size: 36px;
+            font-weight: 800;
+            color: #0d9488;
+            margin-bottom: 8px;
+        }
+
+        .pay-label {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        /* Prop 22 Info */
+        .prop22-section {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+            border: 2px solid #f59e0b;
+        }
+
+        .prop22-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #92400e;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .prop22-content {
+            color: #78350f;
+            line-height: 1.6;
+        }
+
+        .prop22-content p {
+            margin-bottom: 12px;
+        }
+
+        .prop22-list {
+            list-style: none;
+            margin: 16px 0;
+        }
+
+        .prop22-list li {
+            padding: 8px 0;
+            padding-left: 28px;
+            position: relative;
+        }
+
+        .prop22-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #059669;
+            font-weight: 700;
+        }
+
+        /* Signup Form */
+        .signup-section {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        @media (max-width: 640px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #0d9488;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin: 16px 0;
+        }
+
+        .checkbox-group input {
+            width: 20px;
+            height: 20px;
+            margin-top: 2px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #0d9488, #14b8a6);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(13,148,136,0.3);
+        }
+
+        /* Footer */
+        .footer {
+            background: #1f2937;
+            color: #9ca3af;
+            padding: 32px;
+            text-align: center;
+            margin-top: 48px;
+        }
+
+        .footer a {
+            color: #14b8a6;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <a href="app-final.html" class="header-brand">
+            <div class="header-logo">🚀</div>
+            <div class="header-text">
+                <h1>Paradise Delivery</h1>
+                <p>Driver Portal</p>
+            </div>
+        </a>
+    </header>
+
+    <div class="container">
+        <!-- Hero -->
+        <div class="hero">
+            <h2>🚗 Drive with Paradise</h2>
+            <p>Join our local delivery team. Earn competitive pay, work flexible hours, and keep 100% of your tips. We're a Paradise-based company that cares about our drivers.</p>
+            
+            <div class="hero-stats">
+                <div class="stat">
+                    <div class="stat-value">$18-25</div>
+                    <div class="stat-label">Avg hourly pay</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">$5+</div>
+                    <div class="stat-label">Base per delivery</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">$0.60</div>
+                    <div class="stat-label">Per mile</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pay Structure -->
+        <div class="pay-section">
+            <h2 class="section-title">💰 How You Get Paid</h2>
+            
+            <div class="pay-grid">
+                <div class="pay-card highlight">
+                    <div class="pay-amount">$5.00</div>
+                    <div class="pay-label">Base Pay Per Delivery<br><small>Guaranteed minimum</small></div>
+                </div>
+                
+                <div class="pay-card highlight">
+                    <div class="pay-amount">$0.60</div>
+                    <div class="pay-label">Per Mile<br><small>From pickup to dropoff</small></div>
+                </div>
+                
+                <div class="pay-card">
+                    <div class="pay-amount">100%</div>
+                    <div class="pay-label">Tips<br><small>You keep it all</small></div>
+                </div>
+                
+                <div class="pay-card">
+                    <div class="pay-amount">Weekly</div>
+                    <div class="pay-label">Direct Deposit<br><small>Every Monday</small></div>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 32px; margin-bottom: 16px; font-size: 18px;">Example Deliveries:</h3>
+            
+            <div style="background: #f9fafb; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                    <span><strong>Short Trip</strong> (2 miles, 15 min)</span>
+                    <span style="color: #059669; font-weight: 700;">$6.20</span>
+                </div>
+                <div style="font-size: 14px; color: #6b7280;">$5.00 base + $1.20 mileage</div>
+            </div>
+            
+            <div style="background: #f9fafb; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                    <span><strong>Medium Trip</strong> (5 miles, 25 min)</span>
+                    <span style="color: #059669; font-weight: 700;">$8.00</span>
+                </div>
+                <div style="font-size: 14px; color: #6b7280;">$5.00 base + $3.00 mileage</div>
+            </div>
+            
+            <div style="background: #f9fafb; border-radius: 12px; padding: 20px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                    <span><strong>Long Trip</strong> (10 miles, 40 min)</span>
+                    <span style="color: #059669; font-weight: 700;">$11.00</span>
+                </div>
+                <div style="font-size: 14px; color: #6b7280;">$5.00 base + $6.00 mileage</div>
+            </div>
+        </div>
+
+        <!-- Prop 22 Info -->
+        <div class="prop22-section">
+            <div class="prop22-title">
+                📋 California Prop 22 Compliance
+            </div>
+            <div class="prop22-content">
+                <p><strong>You're protected under California law.</strong> As an independent contractor with Paradise Delivery, you receive:</p>
+                
+                <ul class="prop22-list">
+                    <li><strong>120% of minimum wage</strong> for active delivery time ($5.00 base exceeds this)</li>
+                    <li><strong>$0.60 per mile</strong> reimbursement (67% above the $0.36 minimum)</li>
+                    <li><strong>Healthcare subsidy</strong> if you work 15+ hours per week</li>
+                    <li><strong>Occupational accident insurance</strong> coverage</li>
+                    <li><strong>No delivery minimums</strong> - work when you want</li>
+                </ul>
+                
+                <p style="margin-top: 16px;"><strong>We pay more than required.</strong> Our $5 base + $0.60/mile exceeds Prop 22 minimums on every delivery. You'll never need a "true-up" payment - you already earn above the guarantee.</p>
+            </div>
+        </div>
+
+        <!-- Requirements -->
+        <div class="pay-section">
+            <h2 class="section-title">✅ Driver Requirements</h2>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                <div style="background: #f0fdf4; border-radius: 12px; padding: 20px; border: 2px solid #86efac;">
+                    <h4 style="color: #166534; margin-bottom: 12px;">🚗 Vehicle Requirements</h4>
+                    <ul style="list-style: none; color: #374151;">
+                        <li>• Valid driver's license</li>
+                        <li>• Valid auto insurance</li>
+                        <li>• Vehicle in good condition</li>
+                        <li>• 2008 or newer preferred</li>
+                    </ul>
+                </div>
+                
+                <div style="background: #eff6ff; border-radius: 12px; padding: 20px; border: 2px solid #93c5fd;">
+                    <h4 style="color: #1e40af; margin-bottom: 12px;">📱 Technology</h4>
+                    <ul style="list-style: none; color: #374151;">
+                        <li>• Smartphone (iOS or Android)</li>
+                        <li>• Data plan for GPS</li>
+                        <li>• Paradise Delivery driver app</li>
+                    </ul>
+                </div>
+                
+                <div style="background: #faf5ff; border-radius: 12px; padding: 20px; border: 2px solid #d8b4fe;">
+                    <h4 style="color: #7c3aed; margin-bottom: 12px;">👤 Personal</h4>
+                    <ul style="list-style: none; color: #374151;">
+                        <li>• 18 years or older</li>
+                        <li>• Clean driving record</li>
+                        <li>• Background check approval</li>
+                        <li>• Live in/near Paradise, CA</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Signup Form -->
+        <div class="signup-section">
+            <h2 class="section-title">🚀 Apply to Drive</h2>
+            
+            <form id="driverForm" onsubmit="handleSubmit(event)">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <input type="text" id="firstName" name="firstName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" id="lastName" name="lastName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Create Password</label>
+                        <input type="password" id="password" name="password" required minlength="6" placeholder="At least 6 characters">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="zip">ZIP Code</label>
+                        <input type="text" id="zip" name="zip" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="vehicle">Vehicle Year</label>
+                        <select id="vehicle" name="vehicleYear" required>
+                            <option value="">Select year</option>
+                            <option value="2025">2025</option>
+                            <option value="2024">2024</option>
+                            <option value="2023">2023</option>
+                            <option value="2022">2022</option>
+                            <option value="2021">2021</option>
+                            <option value="2020">2020</option>
+                            <option value="2019">2019</option>
+                            <option value="2018">2018</option>
+                            <option value="2017">2017</option>
+                            <option value="2016">2016</option>
+                            <option value="2015">2015</option>
+                            <option value="2014">2014</option>
+                            <option value="2013">2013</option>
+                            <option value="2012">2012</option>
+                            <option value="2011">2011</option>
+                            <option value="2010">2010</option>
+                            <option value="2009">2009</option>
+                            <option value="2008">2008</option>
+                            <option value="older">2007 or older</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="insurance" name="insurance" required>
+                    <label for="insurance" style="font-weight: 400; color: #4b5563;">
+                        I confirm I have valid auto insurance and will upload proof during onboarding.
+                    </label>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="background" name="background" required>
+                    <label for="background" style="font-weight: 400; color: #4b5563;">
+                        I consent to a background check as required by law.
+                    </label>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="contractor" name="contractor" required>
+                    <label for="contractor" style="font-weight: 400; color: #4b5563;">
+                        I understand I will be an independent contractor (1099), not an employee.
+                    </label>
+                </div>
+                
+                <button type="submit" class="submit-btn">Submit Application</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>Questions? Text or call us at (530) 783-7148</p>
+        <p style="margin-top: 8px;">Based in Paradise, CA • Local support, always</p>
+        <p style="margin-top: 16px; font-size: 14px;">
+            <a href="prop22-disclosure.html">Prop 22 Disclosure</a> • 
+            <a href="terms.html">Terms of Service</a> • 
+            <a href="privacy.html">Privacy Policy</a>
+        </p>
+    </div>
+
+    <script>
+        async function handleSubmit(event) {
+            event.preventDefault();
+            
+            const submitBtn = event.target.querySelector('.submit-btn');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Submitting...';
+            submitBtn.disabled = true;
+            
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData);
+            
+            // Convert vehicleYear to integer
+            data.vehicleYear = parseInt(data.vehicleYear) || 0;
+            
+            try {
+                const response = await fetch('/api/drivers/apply', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    // Show success message
+                    showSuccessModal();
+                    event.target.reset();
+                } else {
+                    alert('Error: ' + (result.error || 'Something went wrong. Please try again.'));
+                }
+            } catch (error) {
+                console.error('Error submitting application:', error);
+                alert('Network error. Please check your connection and try again.');
+            } finally {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+        
+        function showSuccessModal() {
+            // Remove existing modal
+            const existingModal = document.getElementById('successModal');
+            if (existingModal) existingModal.remove();
+            
+            const modalHTML = `
+                <div id="successModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px;">
+                    <div style="background: white; border-radius: 16px; max-width: 500px; width: 100%; padding: 40px; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.25);">
+                        <div style="font-size: 64px; margin-bottom: 16px;">🎉</div>
+                        <h2 style="font-size: 24px; font-weight: 700; margin-bottom: 16px; color: #111827;">Application Submitted!</h2>
+                        <p style="color: #6b7280; margin-bottom: 24px; line-height: 1.6;">
+                            Thank you for applying to drive with Paradise Delivery!<br><br>
+                            We'll review your application and contact you within 2 business days to schedule an orientation.
+                        </p>
+                        <div style="background: #f0fdf4; border-radius: 12px; padding: 16px; margin-bottom: 24px;">
+                            <p style="color: #166534; font-size: 14px; margin: 0;">
+                                <strong>Next Steps:</strong><br>
+                                1. Check your email for confirmation<br>
+                                2. Upload your documents (license, insurance)<br>
+                                3. Complete background check
+                            </p>
+                        </div>
+                        <button onclick="closeSuccessModal()" style="background: linear-gradient(135deg, #0d9488, #14b8a6); color: white; border: none; padding: 12px 32px; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                            Got it!
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+        }
+        
+        function closeSuccessModal() {
+            const modal = document.getElementById('successModal');
+            if (modal) modal.remove();
+        }
+    </script>
+</body>
+</html>

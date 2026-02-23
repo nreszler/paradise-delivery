@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paradise Delivery - Demo Restaurant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #0d9488, #14b8a6);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .header-logo {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .header-text h1 {
+            color: white;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .header-text p {
+            color: rgba(255,255,255,0.85);
+            font-size: 12px;
+        }
+
+        .cart-btn {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .cart-btn:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        .cart-count {
+            background: #f97316;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        /* Restaurant Hero */
+        .restaurant-hero {
+            background: linear-gradient(135deg, #dc2626, #ea580c);
+            padding: 40px 24px;
+            color: white;
+        }
+
+        .restaurant-info {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .restaurant-name {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .restaurant-meta {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .restaurant-rating {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            width: fit-content;
+        }
+
+        /* Menu Container */
+        .menu-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .menu-section {
+            margin-bottom: 32px;
+        }
+
+        .menu-section-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #111827;
+        }
+
+        .menu-item {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+        }
+
+        .menu-item:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+
+        .menu-item-info {
+            flex: 1;
+        }
+
+        .menu-item-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .menu-item-desc {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+
+        .menu-item-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0d9488;
+        }
+
+        .add-to-cart-btn {
+            background: linear-gradient(135deg, #0d9488, #14b8a6);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .add-to-cart-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Cart Sidebar */
+        .cart-sidebar {
+            position: fixed;
+            right: -400px;
+            top: 0;
+            width: 400px;
+            height: 100vh;
+            background: white;
+            box-shadow: -4px 0 20px rgba(0,0,0,0.1);
+            z-index: 200;
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cart-sidebar.open {
+            right: 0;
+        }
+
+        .cart-header {
+            background: linear-gradient(135deg, #0d9488, #14b8a6);
+            color: white;
+            padding: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-header h2 {
+            font-size: 20px;
+        }
+
+        .close-cart {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .cart-items {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-weight: 600;
+        }
+
+        .cart-item-price {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .qty-btn {
+            background: #f3f4f6;
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .cart-footer {
+            padding: 24px;
+            border-top: 2px solid #e5e7eb;
+            background: #f9fafb;
+        }
+
+        .cart-summary-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 20px;
+            font-weight: 700;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 2px solid #0d9488;
+            color: #0d9488;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #0d9488, #14b8a6);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 16px;
+            transition: all 0.2s;
+        }
+
+        .checkout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(13,148,136,0.3);
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 150;
+            display: none;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .cart-sidebar {
+                width: 100%;
+                right: -100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <a href="app-final.html" class="header-brand">
+            <div class="header-logo">🚀</div>
+            <div class="header-text">
+                <h1>Paradise Delivery</h1>
+                <p>Local delivery, fair prices</p>
+            </div>
+        </a>
+        <button class="cart-btn" onclick="toggleCart()">
+            🛒 Cart
+            <span class="cart-count" id="cartCount">0</span>
+        </button>
+    </header>
+
+    <!-- Restaurant Hero -->
+    <div class="restaurant-hero">
+        <div class="restaurant-info">
+            <h1 class="restaurant-name">🌮 Maria's Kitchen</h1>
+            <div class="restaurant-meta">
+                <span>Mexican • Paradise, CA</span>
+                <span>•</span>
+                <span>25-35 min</span>
+                <span>•</span>
+                <span>$2.49 delivery</span>
+            </div>
+            <div class="restaurant-rating">
+                ⭐ 4.8 (127 reviews) • "Best burritos in Paradise!"
+            </div>
+        </div>
+    </div>
+
+    <!-- Menu -->
+    <div class="menu-container">
+        <!-- Appetizers -->
+        <div class="menu-section">
+            <h2 class="menu-section-title">Appetizers</h2>
+            
+            <div class="menu-item">
+                <div class="menu-item-info">
+                    <div class="menu-item-name">Chips & Guacamole</div>
+                    <div class="menu-item-desc">Fresh avocado, lime, cilantro, served with house-made tortilla chips</div>
+                    <div class="menu-item-price">$6.99</div>
+                </div>
+                <button class="add-to-cart-btn" onclick="addToCart('Chips & Guacamole', 6.99)">Add</button>
+            </div>
+
+            <div class="menu-item">
+                <div class="menu-item-info">
+                    <div class="menu-item-name">Queso Fundido</div>
+                    <div class="menu-item-desc">Melted cheese with chorizo, served with flour tortillas</div>
+                    <div class="menu-item-price">$8.99</div>
+                </div>
+                <button class="add-to-cart-btn" onclick="addToCart('Queso Fundido', 8.99)">Add</button>
+            </div>
+        </div>
+
+        <!-- Burritos -->
+        <div class="menu-section">
+            <h2 class="menu-section-title">Burritos</h2>
+            
+            <div class="menu-item">
+                <div class="menu-item-info">
+                    <div class="menu-item-name">Maria's Special Burrito</div>
+                    <div class="menu-item-desc">Flour tortilla, rice, beans, cheese, salsa, guac. Choice of chicken, beef, or veggie.</div>
+                    <div class="menu-item-price">$12.35</div>
+                </div>
+                <button class="add-to-cart-btn" onclick="addToCart('Maria\'s Special Burrito', 12.35)">Add</button>
+            </div>
+
+            <div class="menu-item">
+                <div class="menu-item-info">
+                    <div class="menu-item-name">California Burrito</div>
+                    <div class="menu-item-desc">Carne asada, fries, cheese, sour cream, guacamole</div>
+                    <div class="menu-item-price">$13.99</div>
+                </div>
+                <button class="add-to-cart-btn" onclick="addToCart('California Burrito', 13.99)">Add</button>
+            </div>
+
+            <div class="menu-item">
+                <div class="menu-item-info">
+                    <div class="menu-item-name">Breakfast Burrito</div>
+                    <div class="menu-item-desc">Eggs, bacon, potatoes, cheese, salsa (served all day)</div>
+                    <div class="menu-item-price">$10.99</div>
+                </div>
+                <button class="add-to-cart-btn" onclick="addToCart('Breakfast Burrito', 10.99)">Add</button>
+            </div>
+        </div>
+
+        <!-- Tacos -->
+        <div class="menu-section">
+            <h2 class="menu-section-title">Tacos</h2>
+            
+            <div class="menu-item">
+                <div class="menu-item-info">
+                    <div class="menu-item-name">Street Tacos (3)</div>
+                    <div class="menu-item-desc">Corn tortillas, choice of meat, onions, cilantro, lime</div>
+                    <div class="menu-item-price">$10.29</div>
+                </div>
+                <button class="add-to-cart-btn" onclick="addToCart('Street Tacos (3)', 10.29)">Add</button>
+            </div>
+
+            <div class="menu-item">
+                <div class="menu-item-info">
+                    <div class="menu-item-name">Fish Tacos (2)</div>
+                    <div class="menu-item-desc">Grilled fish, cabbage slaw, chipotle crema, flour tortillas</div>
+                    <div class="menu-item-price">$11.99</div>
+                </div>
+                <button class="add-to-cart-btn" onclick="addToCart('Fish Tacos (2)', 11.99)">Add</button>
+            </div>
+        </div>
+
+        <!-- Drinks -->
+        <div class="menu-section">
+            <h2 class="menu-section-title">Drinks</h2>
+            
+            <div class="menu-item">
+                <div class="menu-item-info">
+                    <div class="menu-item-name">Horchata (Large)</div>
+                    <div class="menu-item-desc">House-made rice drink with cinnamon</div>
+                    <div class="menu-item-price">$3.99</div>
+                </div>
+                <button class="add-to-cart-btn" onclick="addToCart('Horchata', 3.99)">Add</button>
+            </div>
+
+            <div class="menu-item">
+                <div class="menu-item-info">
+                    <div class="menu-item-name">Mexican Coke</div>
+                    <div class="menu-item-desc">Made with real cane sugar</div>
+                    <div class="menu-item-price">$3.49</div>
+                </div>
+                <button class="add-to-cart-btn" onclick="addToCart('Mexican Coke', 3.49)">Add</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Overlay -->
+    <div class="overlay" id="overlay" onclick="toggleCart()"></div>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h2>Your Order</h2>
+            <button class="close-cart" onclick="toggleCart()">×</button>
+        </div>
+        
+        <div class="cart-items" id="cartItems">
+            <!-- Cart items will be inserted here -->
+        </div>
+        
+        <div class="cart-footer">
+            <div class="cart-summary-line">
+                <span>Subtotal</span>
+                <span id="subtotal">$0.00</span>
+            </div>
+            <div class="cart-summary-line">
+                <span>Delivery (2 mi)</span>
+                <span>$2.49</span>
+            </div>
+            <div class="cart-summary-line">
+                <span>Tax (8%)</span>
+                <span id="tax">$0.00</span>
+            </div>
+            <div class="cart-total">
+                <span>Total</span>
+                <span id="total">$0.00</span>
+            </div>
+            <button class="checkout-btn" onclick="checkout()">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <!-- Stripe.js -->
+    <script src="https://js.stripe.com/v3/"></script>
+    
+    <script>
+        let cart = [];
+        let stripe = null;
+        
+        // Initialize Stripe with publishable key
+        async function initializeStripe() {
+            try {
+                const response = await fetch('/api/payments/config');
+                const config = await response.json();
+                stripe = Stripe(config.publishableKey);
+            } catch (error) {
+                console.error('Failed to initialize Stripe:', error);
+            }
+        }
+        
+        // Call on page load
+        initializeStripe();
+        
+        function addToCart(name, price) {
+            const existingItem = cart.find(item => item.name === name);
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                cart.push({ name, price, quantity: 1 });
+            }
+            updateCart();
+            toggleCart();
+        }
+        
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+        
+        function updateQuantity(index, change) {
+            cart[index].quantity += change;
+            if (cart[index].quantity <= 0) {
+                removeFromCart(index);
+            } else {
+                updateCart();
+            }
+        }
+        
+        function updateCart() {
+            const cartItems = document.getElementById('cartItems');
+            const cartCount = document.getElementById('cartCount');
+            const subtotalEl = document.getElementById('subtotal');
+            const taxEl = document.getElementById('tax');
+            const totalEl = document.getElementById('total');
+            
+            // Update count
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartCount.textContent = totalItems;
+            
+            // Update items
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<p style="text-align: center; color: #6b7280; padding: 40px;">Your cart is empty</p>';
+            } else {
+                cartItems.innerHTML = cart.map((item, index) => `
+                    <div class="cart-item">
+                        <div class="cart-item-info">
+                            <div class="cart-item-name">${item.name}</div>
+                            <div class="cart-item-price">$${item.price.toFixed(2)} each</div>
+                        </div>
+                        <div class="quantity-controls">
+                            <button class="qty-btn" onclick="updateQuantity(${index}, -1)">-</button>
+                            <span>${item.quantity}</span>
+                            <button class="qty-btn" onclick="updateQuantity(${index}, 1)">+</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            // Calculate totals
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const delivery = 2.49;
+            const tax = (subtotal + delivery) * 0.08;
+            const total = subtotal + delivery + tax;
+            
+            subtotalEl.textContent = '$' + subtotal.toFixed(2);
+            taxEl.textContent = '$' + tax.toFixed(2);
+            totalEl.textContent = '$' + total.toFixed(2);
+        }
+        
+        function toggleCart() {
+            document.getElementById('cartSidebar').classList.toggle('open');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+        
+        async function checkout() {
+            if (cart.length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
+            
+            if (!stripe) {
+                alert('Payment system is loading. Please try again in a moment.');
+                return;
+            }
+            
+            // Calculate totals
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const delivery = 2.49;
+            const tax = (subtotal + delivery) * 0.08;
+            const total = subtotal + delivery + tax;
+            
+            // Show checkout modal
+            showCheckoutModal(total);
+        }
+        
+        function showCheckoutModal(totalAmount) {
+            // Remove existing modal
+            const existingModal = document.getElementById('checkoutModal');
+            if (existingModal) existingModal.remove();
+            
+            const modalHTML = `
+                <div id="checkoutModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px;">
+                    <div style="background: white; border-radius: 16px; max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px rgba(0,0,0,0.25);">
+                        <div style="padding: 32px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                                <h2 style="font-size: 1.5rem; font-weight: 700; margin: 0;">Complete Your Order</h2>
+                                <button onclick="closeCheckoutModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #6b7280;">×</button>
+                            </div>
+                            
+                            <div style="margin-bottom: 24px;">
+                                <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 12px;">Order Summary</h3>
+                                ${cart.map(item => `
+                                    <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e5e7eb;">
+                                        <span>${item.quantity}x ${item.name}</span>
+                                        <span>$${(item.price * item.quantity).toFixed(2)}</span>
+                                    </div>
+                                `).join('')}
+                                <div style="display: flex; justify-content: space-between; padding: 12px 0; margin-top: 12px; border-top: 2px solid #0d9488; font-weight: 700; font-size: 1.25rem; color: #0d9488;">
+                                    <span>Total</span>
+                                    <span>$${totalAmount.toFixed(2)}</span>
+                                </div>
+                            </div>
+                            
+                            <form id="payment-form">
+                                <div style="margin-bottom: 16px;">
+                                    <label style="display: block; margin-bottom: 6px; font-weight: 600; color: #374151;">Email</label>
+                                    <input type="email" id="email" required style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 16px;" placeholder="you@example.com">
+                                </div>
+                                
+                                <div style="margin-bottom: 16px;">
+                                    <label style="display: block; margin-bottom: 6px; font-weight: 600; color: #374151;">Delivery Address</label>
+                                    <input type="text" id="address" required style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 16px;" placeholder="123 Main St, Paradise, CA">
+                                </div>
+                                
+                                <div style="margin-bottom: 24px;">
+                                    <label style="display: block; margin-bottom: 6px; font-weight: 600; color: #374151;">Card Information</label>
+                                    <div id="card-element" style="padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; background: white;"></div>
+                                    <div id="card-errors" style="color: #dc2626; font-size: 14px; margin-top: 8px;"></div>
+                                </div>
+                                
+                                <button type="submit" id="submit-button" style="width: 100%; background: linear-gradient(135deg, #0d9488, #14b8a6); color: white; border: none; padding: 16px; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer;">
+                                    Pay $${totalAmount.toFixed(2)}
+                                </button>
+                            </form>
+                            
+                            <div style="margin-top: 16px; padding: 16px; background: #f9fafb; border-radius: 8px; font-size: 14px; color: #6b7280;">
+                                <strong>Test Card:</strong> 4242 4242 4242 4242<br>
+                                Any future date, any 3-digit CVC
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            
+            // Create card element
+            const elements = stripe.elements();
+            const cardElement = elements.create('card', {
+                style: {
+                    base: {
+                        fontSize: '16px',
+                        color: '#1f2937',
+                        '::placeholder': {
+                            color: '#9ca3af',
+                        },
+                    },
+                },
+            });
+            cardElement.mount('#card-element');
+            
+            // Handle form submission
+            document.getElementById('payment-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const submitButton = document.getElementById('submit-button');
+                submitButton.disabled = true;
+                submitButton.textContent = 'Processing...';
+                
+                try {
+                    // Create order first
+                    const orderData = {
+                        customerId: 1, // Demo customer
+                        restaurantId: 1, // Maria's Kitchen
+                        items: cart.map(item => ({
+                            menuItemId: 1, // Would be actual menu item IDs
+                            price: item.price,
+                            quantity: item.quantity,
+                            name: item.name
+                        })),
+                        deliveryAddress: document.getElementById('address').value,
+                        distanceMiles: 2.0,
+                        tipAmount: 0
+                    };
+                    
+                    const orderResponse = await fetch('/api/orders/create', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(orderData)
+                    });
+                    
+                    const orderResult = await orderResponse.json();
+                    
+                    if (!orderResult.success) {
+                        throw new Error('Failed to create order');
+                    }
+                    
+                    // Create payment intent
+                    const paymentData = {
+                        orderId: orderResult.orderId,
+                        amount: totalAmount,
+                        customerEmail: document.getElementById('email').value
+                    };
+                    
+                    const paymentResponse = await fetch('/api/payments/create-intent', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(paymentData)
+                    });
+                    
+                    const paymentResult = await paymentResponse.json();
+                    
+                    if (!paymentResult.clientSecret) {
+                        throw new Error('Failed to create payment');
+                    }
+                    
+                    // Confirm payment
+                    const { error, paymentIntent } = await stripe.confirmCardPayment(
+                        paymentResult.clientSecret,
+                        {
+                            payment_method: {
+                                card: cardElement,
+                                billing_details: {
+                                    email: document.getElementById('email').value
+                                }
+                            }
+                        }
+                    );
+                    
+                    if (error) {
+                        document.getElementById('card-errors').textContent = error.message;
+                        submitButton.disabled = false;
+                        submitButton.textContent = `Pay $${totalAmount.toFixed(2)}`;
+                    } else if (paymentIntent.status === 'succeeded') {
+                        // Success!
+                        cart = [];
+                        updateCart();
+                        closeCheckoutModal();
+                        alert('Payment successful! Your order has been placed.');
+                    }
+                    
+                } catch (error) {
+                    console.error('Payment error:', error);
+                    document.getElementById('card-errors').textContent = 'Payment failed. Please try again.';
+                    submitButton.disabled = false;
+                    submitButton.textContent = `Pay $${totalAmount.toFixed(2)}`;
+                }
+            });
+        }
+        
+        function closeCheckoutModal() {
+            const modal = document.getElementById('checkoutModal');
+            if (modal) modal.remove();
+        }
+        
+        // Initialize
+        updateCart();
+    </script>
+</body>
+</html>

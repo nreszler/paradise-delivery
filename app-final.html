@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paradise Delivery</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f3f4f6;
+            color: #1f2937;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #0d9488, #14b8a6);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-logo {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .header-text h1 {
+            color: white;
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header-text p {
+            color: rgba(255,255,255,0.85);
+            font-size: 12px;
+            font-weight: 400;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 16px;
+        }
+
+        .header-nav button {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .header-nav button:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #0d9488, #14b8a6);
+            padding: 64px 24px;
+            text-align: center;
+            color: white;
+        }
+
+        .hero h2 {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+
+        .hero p {
+            font-size: 20px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 32px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+        }
+
+        .hero-btn-primary {
+            background: white;
+            color: #0d9488;
+            padding: 14px 32px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .hero-btn-secondary {
+            background: transparent;
+            color: white;
+            padding: 14px 32px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            border: 2px solid rgba(255,255,255,0.4);
+            transition: all 0.2s;
+        }
+
+        /* Container */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 32px 20px;
+        }
+
+        /* Restaurant Card */
+        .restaurant-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 32px;
+        }
+
+        .restaurant-header {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            padding: 32px 24px;
+            color: white;
+            text-align: center;
+        }
+
+        .restaurant-header h3 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .restaurant-header p {
+            opacity: 0.9;
+            font-size: 15px;
+        }
+
+        .restaurant-content {
+            padding: 24px;
+        }
+
+        .menu-item {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: all 0.2s;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .menu-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .menu-item h4 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #111827;
+        }
+
+        .menu-item p {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 10px;
+        }
+
+        .menu-price {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0d9488;
+        }
+
+        /* Comparison Section */
+        .comparison-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 32px;
+        }
+
+        .comparison-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: #111827;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 640px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .comparison-box {
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .paradise-box {
+            background: #f0fdfa;
+            border: 2px solid #0d9488;
+        }
+
+        .other-box {
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            opacity: 0.85;
+        }
+
+        .box-header {
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .paradise-box .box-header {
+            color: #0d9488;
+        }
+
+        .other-box .box-header {
+            color: #6b7280;
+        }
+
+        .box-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .paradise-box .box-icon {
+            background: #0d9488;
+            color: white;
+        }
+
+        .other-box .box-icon {
+            background: #9ca3af;
+            color: white;
+        }
+
+        .line-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 14px;
+        }
+
+        .line-item:last-of-type {
+            border-bottom: none;
+        }
+
+        .box-total {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 12px;
+            margin-top: 8px;
+            border-top: 2px solid #374151;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .paradise-box .box-total {
+            color: #0d9488;
+        }
+
+        .other-box .box-total {
+            color: #4b5563;
+        }
+
+        /* Savings Banner */
+        .savings-banner {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            border-radius: 12px;
+            padding: 28px;
+            text-align: center;
+            color: white;
+        }
+
+        .savings-label {
+            font-size: 16px;
+            font-weight: 500;
+            opacity: 0.95;
+            margin-bottom: 8px;
+        }
+
+        .savings-amount {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .savings-note {
+            font-size: 15px;
+            opacity: 0.9;
+        }
+
+        /* Restaurant Section */
+        .restaurant-section {
+            background: #1f2937;
+            padding: 48px 24px;
+            text-align: center;
+            color: white;
+        }
+
+        .restaurant-section h3 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .restaurant-section > p {
+            color: #9ca3af;
+            margin-bottom: 32px;
+        }
+
+        .commission-compare {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            max-width: 480px;
+            margin: 0 auto 24px;
+        }
+
+        @media (max-width: 480px) {
+            .commission-compare {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .commission-box {
+            background: #374151;
+            border-radius: 12px;
+            padding: 28px 20px;
+        }
+
+        .commission-box.highlight {
+            background: #0d9488;
+            border: 2px solid #14b8a6;
+        }
+
+        .commission-box h4 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .commission-box .percent {
+            font-size: 44px;
+            font-weight: 800;
+            margin: 12px 0;
+        }
+
+        .commission-box p {
+            color: #9ca3af;
+            font-size: 14px;
+        }
+
+        .commission-box.highlight p {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .highlight-box {
+            background: #0d9488;
+            padding: 20px 28px;
+            border-radius: 12px;
+            max-width: 400px;
+            margin: 0 auto;
+            font-size: 20px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-brand">
+            <div class="header-logo">🚀</div>
+            <div class="header-text">
+                <h1>Paradise Delivery</h1>
+                <p>Local delivery, fair prices</p>
+            </div>
+        </div>
+        <nav class="header-nav">
+            <a href="demo-restaurant.html" style="color: white; text-decoration: none; margin-right: 20px; font-weight: 500;">Demo</a>
+            <a href="driver-portal.html" style="color: white; text-decoration: none; margin-right: 20px; font-weight: 500;">Drive</a>
+            <a href="restaurant-partners.html" style="color: white; text-decoration: none; margin-right: 20px; font-weight: 500;">Partner</a>
+            <button>Sign In</button>
+        </nav>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+        <h2>Food Delivery That Makes Sense</h2>
+        <p>Support local restaurants, save on every order</p>
+        <div class="hero-buttons">
+            <a href="demo-restaurant.html" class="hero-btn-primary">Order Now</a>
+            <a href="restaurant-partners.html" class="hero-btn-secondary">For Restaurants</a>
+        </div>
+    </section>
+
+    <div class="container">
+        <!-- Restaurant Card -->
+        <div class="restaurant-card">
+            <div class="restaurant-header">
+                <h3>🔥 Maria's Kitchen</h3>
+                <p>Mexican • Paradise, CA • ⭐ 4.8 (127 reviews)</p>
+                <p style="margin-top: 8px;">25-35 min • Delivery from $2.49</p>
+            </div>
+            <div class="restaurant-content">
+                <div class="menu-item">
+                    <h4>Maria's Special Burrito</h4>
+                    <p>Flour tortilla, rice, beans, cheese, salsa, guac</p>
+                    <div class="menu-price">$10.79</div>
+                </div>
+                <div class="menu-item">
+                    <h4>Street Tacos (3)</h4>
+                    <p>Corn tortillas, choice of meat, onions, cilantro</p>
+                    <div class="menu-price">$8.99</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Distance-Based Delivery Info -->
+        <div style="background: linear-gradient(135deg, #f0fdfa 0%, #ecfdf5 100%); border-radius: 16px; padding: 24px; margin-bottom: 32px; border: 2px solid #0d9488;">
+            <h3 style="color: #0d9488; margin-bottom: 16px; font-size: 1.25rem;">🚗 Distance-Based Delivery</h3>
+            <p style="color: #57534e; margin-bottom: 16px;">Fair pricing based on how far we deliver:</p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px;">
+                <div style="background: white; padding: 16px; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #0d9488;">$2.49</div>
+                    <div style="font-size: 0.875rem; color: #6b7280;">0-2 miles</div>
+                </div>
+                <div style="background: white; padding: 16px; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #0d9488;">$3.49</div>
+                    <div style="font-size: 0.875rem; color: #6b7280;">2-4 miles</div>
+                </div>
+                <div style="background: white; padding: 16px; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #0d9488;">$4.49</div>
+                    <div style="font-size: 0.875rem; color: #6b7280;">4-7 miles</div>
+                </div>
+                <div style="background: white; padding: 16px; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #0d9488;">$5.49</div>
+                    <div style="font-size: 0.875rem; color: #6b7280;">7-11 miles</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comparison Section -->
+        <div class="comparison-card">
+            <h3 class="comparison-title">Sample Order: 2 Burritos + 1 Tacos (2 miles)</h3>
+            
+            <div class="comparison-grid">
+                <div class="comparison-box paradise-box">
+                    <div class="box-header">
+                        <div class="box-icon">P</div>
+                        <span>Paradise Delivery</span>
+                    </div>
+                    <div class="line-item"><span>2x Burritos</span><span>$24.70</span></div>
+                    <div class="line-item"><span>1x Tacos</span><span>$10.29</span></div>
+                    <div class="line-item"><span>Delivery (2 mi)</span><span>$2.49</span></div>
+                    <div class="line-item"><span>Tax (8%)</span><span>$2.98</span></div>
+                    <div class="box-total"><span>Subtotal</span><span>$40.46</span></div>
+                </div>
+
+                <div class="comparison-box other-box">
+                    <div class="box-header">
+                        <div class="box-icon">O</div>
+                        <span>DoorDash</span>
+                    </div>
+                    <div class="line-item"><span>2x Burritos</span><span>$25.98</span></div>
+                    <div class="line-item"><span>1x Tacos</span><span>$10.99</span></div>
+                    <div class="line-item"><span>Service Fee (15%)</span><span>$5.55</span></div>
+                    <div class="line-item"><span>Delivery + CA Fee</span><span>$4.98</span></div>
+                    <div class="line-item"><span>Tax (8%)</span><span>$3.88</span></div>
+                    <div class="box-total"><span>Subtotal</span><span>$51.38</span></div>
+                </div>
+            </div>
+
+            <!-- Tip Section (Optional) -->
+            <div style="background: #f9fafb; border-radius: 12px; padding: 20px; margin: 20px 0; border: 2px solid #e5e7eb;">
+                <h4 style="margin-bottom: 16px; color: #374151;">💚 Add a Tip (Optional)</h4>
+                <p style="color: #6b7280; font-size: 14px; margin-bottom: 16px;">100% goes to your driver</p>
+                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                    <button style="flex: 1; min-width: 80px; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; background: white; font-weight: 600; cursor: pointer;" onclick="this.style.borderColor='#0d9488'; this.style.background='#f0fdfa';">No Tip</button>
+                    <button style="flex: 1; min-width: 80px; padding: 12px; border: 2px solid #0d9488; border-radius: 8px; background: #f0fdfa; font-weight: 600; cursor: pointer;">$3</button>
+                    <button style="flex: 1; min-width: 80px; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; background: white; font-weight: 600; cursor: pointer;" onclick="this.style.borderColor='#0d9488'; this.style.background='#f0fdfa';">$5</button>
+                    <button style="flex: 1; min-width: 80px; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; background: white; font-weight: 600; cursor: pointer;" onclick="this.style.borderColor='#0d9488'; this.style.background='#f0fdfa';">$7</button>
+                </div>
+            </div>
+
+            <div class="savings-banner">
+                <div class="savings-label">You Save</div>
+                <div class="savings-amount">$10.92</div>
+                <div class="savings-note">21% less than DoorDash</div>
+            </div>
+        </div>
+
+        <!-- Full Comparison Table -->
+        <div style="background: white; border-radius: 16px; padding: 24px; margin-bottom: 32px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+            <h3 style="font-size: 1.25rem; margin-bottom: 20px; color: #111827;">💰 Price Comparison by Distance</h3>
+            <p style="color: #6b7280; margin-bottom: 20px;">Same $35 order, different distances:</p>
+            
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid #e5e7eb;">
+                            <th style="text-align: left; padding: 12px;">Distance</th>
+                            <th style="text-align: center; padding: 12px;">Paradise</th>
+                            <th style="text-align: center; padding: 12px;">DoorDash</th>
+                            <th style="text-align: center; padding: 12px; color: #059669;">You Save</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 12px;">0-2 miles</td>
+                            <td style="text-align: center; padding: 12px; font-weight: 600;">$40.46</td>
+                            <td style="text-align: center; padding: 12px; color: #6b7280;">$51.38</td>
+                            <td style="text-align: center; padding: 12px; color: #059669; font-weight: 700;">$10.92 (21%)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 12px;">2-4 miles</td>
+                            <td style="text-align: center; padding: 12px; font-weight: 600;">$41.46</td>
+                            <td style="text-align: center; padding: 12px; color: #6b7280;">$51.38</td>
+                            <td style="text-align: center; padding: 12px; color: #059669; font-weight: 700;">$9.92 (19%)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 12px;">4-7 miles</td>
+                            <td style="text-align: center; padding: 12px; font-weight: 600;">$42.46</td>
+                            <td style="text-align: center; padding: 12px; color: #6b7280;">$51.38</td>
+                            <td style="text-align: center; padding: 12px; color: #059669; font-weight: 700;">$8.92 (17%)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px;">7-11 miles</td>
+                            <td style="text-align: center; padding: 12px; font-weight: 600;">$43.46</td>
+                            <td style="text-align: center; padding: 12px; color: #6b7280;">$51.38</td>
+                            <td style="text-align: center; padding: 12px; color: #059669; font-weight: 700;">$7.92 (15%)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Restaurant Section -->
+    <section class="restaurant-section">
+        <h3>👨‍🍳 Restaurant Owners</h3>
+        <p>Partner with us and grow your business</p>
+        
+        <div style="max-width: 600px; margin: 0 auto 24px; text-align: left;">
+            <div style="background: #374151; border-radius: 12px; padding: 24px; margin-bottom: 16px;">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                    <span style="font-size: 24px;">✅</span>
+                    <span style="font-weight: 600; font-size: 18px;">Simple, fair partnership</span>
+                </div>
+                <p style="color: #9ca3af; line-height: 1.6;">No hidden fees. No surprises. Just straightforward pricing that lets you focus on what you do best — making great food.</p>
+            </div>
+            <div style="background: #374151; border-radius: 12px; padding: 24px; margin-bottom: 16px;">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                    <span style="font-size: 24px;">🚀</span>
+                    <span style="font-weight: 600; font-size: 18px;">Local customers, delivered</span>
+                </div>
+                <p style="color: #9ca3af; line-height: 1.6;">We connect you with hungry customers in Paradise and surrounding areas. More orders, more revenue.</p>
+            </div>
+            <div style="background: #374151; border-radius: 12px; padding: 24px;">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                    <span style="font-size: 24px;">💬</span>
+                    <span style="font-weight: 600; font-size: 18px;">Real support, real people</span>
+                </div>
+                <p style="color: #9ca3af; line-height: 1.6;">Based right here in Paradise. Call or text us anytime — we're local and we care.</p>
+            </div>
+        </div>
+
+        <div class="highlight-box">
+            📞 Contact us to learn more
+        </div>
+    </section>
+</body>
+</html>

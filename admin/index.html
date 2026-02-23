@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Paradise Delivery</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 260px;
+            background: #1f2937;
+            color: white;
+            padding: 24px 0;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 0 24px 24px;
+            border-bottom: 1px solid #374151;
+            margin-bottom: 24px;
+        }
+
+        .sidebar-header h1 {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .sidebar-header p {
+            font-size: 12px;
+            opacity: 0.6;
+            margin-top: 4px;
+        }
+
+        .nav-section {
+            margin-bottom: 24px;
+        }
+
+        .nav-section-title {
+            padding: 0 24px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.5;
+            margin-bottom: 8px;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 12px 24px;
+            color: #9ca3af;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: #374151;
+            color: white;
+        }
+
+        .nav-item.active {
+            border-left: 3px solid #0d9488;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: white;
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .header h2 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0d9488, #14b8a6);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        /* Dashboard Content */
+        .dashboard-content {
+            padding: 32px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        @media (max-width: 1200px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h3 {
+            font-size: 14px;
+            color: #6b7280;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .stat-change {
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .stat-change.positive {
+            color: #059669;
+        }
+
+        .stat-change.negative {
+            color: #dc2626;
+        }
+
+        /* Content Sections */
+        .content-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .data-table th {
+            font-weight: 600;
+            color: #6b7280;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .data-table tr:hover {
+            background: #f9fafb;
+        }
+
+        /* Status badges */
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-active {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-inactive {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        /* Driver Application Card */
+        .driver-card {
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .driver-info h4 {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .driver-info p {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .driver-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        /* Hide sections by default */
+        .page-section {
+            display: none;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h1>🚀 Paradise Delivery</h1>
+            <p>Admin Dashboard</p>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Overview</div>
+            <a href="#" class="nav-item active" onclick="showSection('dashboard')">Dashboard</a>
+            <a href="#" class="nav-item" onclick="showSection('orders')">Orders</a>
+            <a href="#" class="nav-item" onclick="showSection('analytics')">Analytics</a>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Management</div>
+            <a href="#" class="nav-item" onclick="showSection('drivers')">
+                Drivers <span id="pendingDriverCount" style="background: #f59e0b; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px; margin-left: 8px;">0</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showSection('restaurants')">Restaurants</a>
+            <a href="#" class="nav-item" onclick="showSection('customers')">Customers</a>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Finance</div>
+            <a href="#" class="nav-item" onclick="showSection('payouts')">Driver Payouts</a>
+            <a href="#" class="nav-item" onclick="showSection('restaurant-payments')">Restaurant Payments</a>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Settings</div>
+            <a href="#" class="nav-item" onclick="showSection('settings')">Settings</a>
+            <a href="app-final.html" class="nav-item">View Website</a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="header">
+            <h2 id="pageTitle">Dashboard</h2>
+            <div class="header-actions">
+                <button class="btn btn-secondary">Export Data</button>
+                <button class="btn btn-primary">+ New Order</button>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+            <!-- Dashboard Section -->
+            <div id="dashboard-section" class="page-section active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Today's Orders</h3>
+                        <div class="stat-value" id="todayOrders">0</div>
+                        <div class="stat-change positive">+12% vs yesterday</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Revenue Today</h3>
+                        <div class="stat-value" id="todayRevenue">$0</div>
+                        <div class="stat-change positive">+8% vs yesterday</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Active Drivers</h3>
+                        <div class="stat-value" id="activeDrivers">0</div>
+                        <div class="stat-change positive">3 online now</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Pending Applications</h3>
+                        <div class="stat-value" id="pendingApplications">0</div>
+                        <div class="stat-change">Needs review</div>
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <div class="section-header">
+                        <h3>Recent Orders</h3>
+                        <button class="btn btn-secondary" onclick="showSection('orders')">View All</button>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Order #</th>
+                                <th>Customer</th>
+                                <th>Restaurant</th>
+                                <th>Status</th>
+                                <th>Total</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentOrdersTable">
+                            <tr>
+                                <td colspan="6" style="text-align: center; color: #6b7280; padding: 32px;">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Drivers Section -->
+            <div id="drivers-section" class="page-section">
+                <div class="content-section">
+                    <div class="section-header">
+                        <h3>Driver Applications</h3>
+                        <div>
+                            <button class="btn btn-secondary">Filter</button>
+                            <button class="btn btn-primary">+ Add Driver</button>
+                        </div>
+                    </div>
+                    <div id="driverApplications">
+                        <p style="color: #6b7280; text-align: center; padding: 32px;">Loading applications...</p>
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <div class="section-header">
+                        <h3>All Drivers</h3>
+                        <button class="btn btn-secondary">Export</button>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Status</th>
+                                <th>Deliveries</th>
+                                <th>Rating</th>
+                                <th>Earnings</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="allDriversTable">
+                            <tr>
+                                <td colspan="6" style="text-align: center; color: #6b7280; padding: 32px;">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Other sections placeholder -->
+            <div id="orders-section" class="page-section">
+                <div class="content-section">
+                    <h3>All Orders</h3>
+                    <p style="color: #6b7280; padding: 32px;">Order management interface coming soon...</p>
+                </div>
+            </div>
+
+            <div id="restaurants-section" class="page-section">
+                <div class="content-section">
+                    <h3>Restaurant Partners</h3>
+                    <p style="color: #6b7280; padding: 32px;">Restaurant management interface coming soon...</p>
+                </div>
+            </div>
+
+            <div id="analytics-section" class="page-section">
+                <div class="content-section">
+                    <h3>Analytics</h3>
+                    <p style="color: #6b7280; padding: 32px;">Analytics dashboard coming soon...</p>
+                </div>
+            </div>
+
+            <div id="payouts-section" class="page-section">
+                <div class="content-section">
+                    <h3>Driver Payouts</h3>
+                    <p style="color: #6b7280; padding: 32px;">Payout management coming soon...</p>
+                </div>
+            </div>
+
+            <div id="restaurant-payments-section" class="page-section">
+                <div class="content-section">
+                    <h3>Restaurant Payments</h3>
+                    <p style="color: #6b7280; padding: 32px;">Payment management coming soon...</p>
+                </div>
+            </div>
+
+            <div id="customers-section" class="page-section">
+                <div class="content-section">
+                    <h3>Customers</h3>
+                    <p style="color: #6b7280; padding: 32px;">Customer management coming soon...</p>
+                </div>
+            </div>
+
+            <div id="settings-section" class="page-section">
+                <div class="content-section">
+                    <h3>Settings</h3>
+                    <p style="color: #6b7280; padding: 32px;">Settings panel coming soon...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Navigation
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionName + '-section').classList.add('active');
+            
+            // Update title
+            const titles = {
+                'dashboard': 'Dashboard',
+                'orders': 'All Orders',
+                'drivers': 'Driver Management',
+                'restaurants': 'Restaurant Partners',
+                'customers': 'Customers',
+                'analytics': 'Analytics',
+                'payouts': 'Driver Payouts',
+                'restaurant-payments': 'Restaurant Payments',
+                'settings': 'Settings'
+            };
+            document.getElementById('pageTitle').textContent = titles[sectionName] || 'Dashboard';
+            
+            // Update nav active state
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Load section data
+            if (sectionName === 'drivers') {
+                loadDriverApplications();
+            }
+        }
+
+        // Load dashboard stats
+        async function loadDashboardStats() {
+            try {
+                const response = await fetch('/api/admin/stats');
+                const data = await response.json();
+                
+                document.getElementById('todayOrders').textContent = data.todayOrders || 0;
+                document.getElementById('todayRevenue').textContent = '$' + (data.todayRevenue || 0).toFixed(2);
+                document.getElementById('activeDrivers').textContent = data.activeDrivers || 0;
+                document.getElementById('pendingApplications').textContent = data.pendingApplications || 0;
+                document.getElementById('pendingDriverCount').textContent = data.pendingApplications || 0;
+            } catch (error) {
+                console.error('Failed to load stats:', error);
+            }
+        }
+
+        // Load recent orders
+        async function loadRecentOrders() {
+            try {
+                const response = await fetch('/api/orders?limit=5');
+                const data = await response.json();
+                
+                const tbody = document.getElementById('recentOrdersTable');
+                if (data.orders && data.orders.length > 0) {
+                    tbody.innerHTML = data.orders.map(order => `
+                        <tr>
+                            <td>#${order.order_number}</td>
+                            <td>${order.customer_first_name} ${order.customer_last_name}</td>
+                            <td>${order.restaurant_name}</td>
+                            <td><span class="status-badge status-${order.status}">${order.status}</span></td>
+                            <td>$${order.total_amount.toFixed(2)}</td>
+                            <td>${new Date(order.created_at).toLocaleTimeString()}</td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #6b7280; padding: 32px;">No orders yet</td></tr>';
+                }
+            } catch (error) {
+                console.error('Failed to load orders:', error);
+            }
+        }
+
+        // Load driver applications
+        async function loadDriverApplications() {
+            try {
+                const response = await fetch('/api/drivers?status=pending');
+                const data = await response.json();
+                
+                const container = document.getElementById('driverApplications');
+                if (data.drivers && data.drivers.length > 0) {
+                    container.innerHTML = data.drivers.map(driver => `
+                        <div class="driver-card">
+                            <div class="driver-info">
+                                <h4>${driver.first_name} ${driver.last_name}</h4>
+                                <p>${driver.email} • ${driver.phone} • Applied ${new Date(driver.created_at).toLocaleDateString()}</p>
+                            </div>
+                            <div class="driver-actions">
+                                <button class="btn btn-primary btn-small" onclick="approveDriver(${driver.id})">Approve</button>
+                                <button class="btn btn-secondary btn-small" onclick="viewDriver(${driver.id})">View</button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = '<p style="color: #6b7280; text-align: center; padding: 32px;">No pending applications</p>';
+                }
+            } catch (error) {
+                console.error('Failed to load drivers:', error);
+            }
+        }
+
+        // Approve driver
+        async function approveDriver(driverId) {
+            try {
+                const response = await fetch(`/api/drivers/${driverId}/approve`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                if (response.ok) {
+                    alert('Driver approved successfully!');
+                    loadDriverApplications();
+                    loadDashboardStats();
+                } else {
+                    alert('Failed to approve driver');
+                }
+            } catch (error) {
+                console.error('Error approving driver:', error);
+            }
+        }
+
+        // View driver details
+        function viewDriver(driverId) {
+            alert('Driver detail view coming soon!');
+        }
+
+        // Load data on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDashboardStats();
+            loadRecentOrders();
+        });
+    </script>
+</body>
+</html>

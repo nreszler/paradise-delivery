@@ -1,0 +1,661 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// USER & AUTH MODELS
+// ============================================
+
+model User {
+  id                String              @id @default(uuid())
+  email             String              @unique
+  phone             String?             @unique
+  password          String?
+  firstName         String
+  lastName          String
+  avatar            String?
+  
+  // Account & Risk
+  accountAge        Int                 @default(0) // Days since creation
+  riskScore         Int                 @default(0) // 0-100
+  isVerified        Boolean             @default(false)
+  isActive          Boolean             @default(true)
+  
+  // Relations
+  customerProfile   CustomerProfile?
+  driverProfile     DriverProfile?
+  restaurantAdmin   RestaurantAdmin?
+  admin             Admin?
+  
+  // Refund tracking
+  refundStats       CustomerRefundStats?
+  refundRequests    RefundRequest[]
+  refundRiskScores  RefundRiskScore[]
+  
+  // Timestamps
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  
+  @@index([email])
+  @@index([riskScore])
+  @@index([createdAt])
+}
+
+model CustomerProfile {
+  id              String    @id @default(uuid())
+  userId          String    @unique
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Delivery preferences
+  defaultAddress  String?
+  dietaryPrefs    String[]  @default([])
+  
+  // Order history
+  totalOrders     Int       @default(0)
+  totalSpent      Decimal   @default(0) @db.Decimal(10, 2)
+  
+  // Timestamps
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model DriverProfile {
+  id                String    @id @default(uuid())
+  userId            String    @unique
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Driver info
+  licenseNumber     String?
+  licenseExpiry     DateTime?
+  vehicleType       VehicleType @default(CAR)
+  vehicleMake       String?
+  vehicleModel      String?
+  vehicleYear       Int?
+  vehicleColor      String?
+  licensePlate      String?
+  
+  // Stripe Connect
+  stripeConnectId   String?
+  
+  // Performance
+  rating            Float     @default(5.0)
+  totalDeliveries   Int       @default(0)
+  earnings          Decimal   @default(0) @db.Decimal(10, 2)
+  
+  // Status
+  isOnline          Boolean   @default(false)
+  currentLocation   Json?     // { lat: number, lng: number }
+  
+  // Prop 22 tracking
+  weeklyTrueUps     WeeklyTrueUp[]
+  
+  // Relations
+  deliveries        Delivery[]
+  
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  @@index([isOnline])
+  @@index([currentLocation])
+}
+
+enum VehicleType {
+  BICYCLE
+  MOTORCYCLE
+  CAR
+  VAN
+  TRUCK
+}
+
+model RestaurantAdmin {
+  id            String      @id @default(uuid())
+  userId        String      @unique
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  restaurantId  String
+  restaurant    Restaurant  @relation(fields: [restaurantId], references: [id])
+  role          AdminRole   @default(MANAGER)
+  
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  
+  @@unique([userId, restaurantId])
+}
+
+enum AdminRole {
+  OWNER
+  MANAGER
+  STAFF
+}
+
+model Admin {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      SystemRole @default(SUPPORT)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum SystemRole {
+  SUPER_ADMIN
+  ADMIN
+  SUPPORT
+  FINANCE
+}
+
+// ============================================
+// RESTAURANT MODELS
+// ============================================
+
+model Restaurant {
+  id              String    @id @default(uuid())
+  name            String
+  slug            String    @unique
+  description     String?
+  
+  // Contact
+  phone           String
+  email           String
+  website         String?
+  
+  // Location
+  address         String
+  city            String
+  state           String
+  zipCode         String
+  coordinates     Json      // { lat: number, lng: number }
+  
+  // Business
+  cuisineTypes    String[]  @default([])
+  priceRange      PriceRange @default($$)
+  rating          Float     @default(0)
+  reviewCount     Int       @default(0)
+  
+  // Hours (JSON structure for flexibility)
+  hours           Json      // { monday: { open: "09:00", close: "22:00" } }
+  
+  // Images
+  logo            String?
+  coverImage      String?
+  
+  // Settings
+  isActive        Boolean   @default(true)
+  isAcceptingOrders Boolean @default(true)
+  prepTimeMinutes Int       @default(20)
+  
+  // Financial
+  stripeAccountId String?
+  commissionRate  Float     @default(0.18) // 18%
+  
+  // Error charges tracking
+  errorCharges    ErrorCharge[]
+  totalErrorCharges Decimal @default(0) @db.Decimal(10, 2)
+  
+  // Relations
+  admins          RestaurantAdmin[]
+  menuItems       MenuItem[]
+  orders          Order[]
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  @@index([slug])
+  @@index([coordinates])
+  @@index([isActive, isAcceptingOrders])
+}
+
+enum PriceRange {
+  $
+  $$
+  $$$
+  $$$$
+}
+
+model MenuItem {
+  id            String    @id @default(uuid())
+  restaurantId  String
+  restaurant    Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  
+  name          String
+  description   String?
+  price         Decimal   @db.Decimal(10, 2)
+  category      String
+  
+  // Options
+  isAvailable   Boolean   @default(true)
+  isPopular     Boolean   @default(false)
+  isVegetarian  Boolean   @default(false)
+  isVegan       Boolean   @default(false)
+  isGlutenFree  Boolean   @default(false)
+  containsAlcohol Boolean @default(false)
+  
+  // Images
+  image         String?
+  
+  // Modifiers (JSON for flexibility)
+  modifiers     Json[]    @default([]) // [{ name: "Size", options: [{ name: "Large", price: 2 }] }]
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  @@index([restaurantId])
+  @@index([category])
+}
+
+// ============================================
+// ORDER MODELS
+// ============================================
+
+model Order {
+  id              String    @id @default(uuid())
+  orderNumber     String    @unique
+  
+  // Relations
+  customerId      String
+  customer        User      @relation(fields: [customerId], references: [id])
+  restaurantId    String
+  restaurant      Restaurant @relation(fields: [restaurantId], references: [id])
+  driverId        String?
+  
+  // Items (stored as JSON for order immutability)
+  items           Json[]    // [{ menuItemId, name, price, quantity, modifiers: [] }]
+  
+  // Pricing breakdown
+  subtotal        Decimal   @db.Decimal(10, 2)
+  tax             Decimal   @db.Decimal(10, 2)
+  serviceFee      Decimal   @db.Decimal(10, 2)      // 15%
+  deliveryFee     Decimal   @db.Decimal(10, 2)
+  smallOrderFee   Decimal?  @db.Decimal(10, 2)      // $2.99 if subtotal < $15
+  tip             Decimal?  @db.Decimal(10, 2)
+  total           Decimal   @db.Decimal(10, 2)
+  
+  // Distance for pricing
+  distanceMiles   Float
+  
+  // Delivery details
+  deliveryAddress String
+  deliveryNotes   String?
+  isContactless   Boolean   @default(false)
+  isGift          Boolean   @default(false)
+  
+  // Risk & Fraud
+  hasAlcohol      Boolean   @default(false)
+  riskScore       Int       @default(0)
+  refundHistory   RefundHistory[]
+  
+  // Payment
+  paymentIntentId String?
+  paymentStatus   PaymentStatus @default(PENDING)
+  
+  // Status
+  status          OrderStatus @default(PENDING)
+  statusHistory   Json[]    @default([]) // [{ status, timestamp, note }]
+  
+  // Timestamps
+  placedAt        DateTime  @default(now())
+  acceptedAt      DateTime?
+  readyAt         DateTime?
+  pickedUpAt      DateTime?
+  deliveredAt     DateTime?
+  estimatedDeliveryAt DateTime?
+  
+  // Relations
+  delivery        Delivery?
+  refundRequest   RefundRequest?
+  refundRiskScore RefundRiskScore?
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  @@index([customerId])
+  @@index([restaurantId])
+  @@index([status])
+  @@index([orderNumber])
+  @@index([placedAt])
+  @@index([riskScore])
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PREPARING
+  READY
+  OUT_FOR_DELIVERY
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  PENDING
+  AUTHORIZED
+  CAPTURED
+  FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
+}
+
+model Delivery {
+  id              String    @id @default(uuid())
+  orderId         String    @unique
+  order           Order     @relation(fields: [orderId], references: [id])
+  
+  driverId        String?
+  driver          DriverProfile? @relation(fields: [driverId], references: [id])
+  
+  // Pickup
+  pickupLocation  Json      // { lat, lng, address }
+  pickupTime      DateTime?
+  
+  // Dropoff
+  dropoffLocation Json      // { lat, lng, address }
+  dropoffTime     DateTime?
+  
+  // Proof of delivery
+  photoProof      String?   // URL to delivery photo
+  signatureProof  String?   // URL to signature image
+  deliveryNotes   String?
+  
+  // Tracking
+  route           Json[]    @default([]) // [{ lat, lng, timestamp }]
+  currentLocation Json?     // { lat, lng }
+  
+  // Verification
+  isContactless   Boolean   @default(false)
+  wasHandedToCustomer Boolean @default(false)
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  @@index([driverId])
+  @@index([orderId])
+}
+
+// ============================================
+// REFUND & FRAUD MODELS
+// ============================================
+
+model RefundRiskScore {
+  id          String    @id @default(uuid())
+  
+  orderId     String    @unique
+  order       Order     @relation(fields: [orderId], references: [id])
+  
+  customerId  String
+  customer    User      @relation(fields: [customerId], references: [id])
+  
+  score       Int       // 0-100 risk score
+  factors     Json      // { customerAccountAge: 10, refundRate: 15, ... }
+  decision    String    // AUTO_APPROVE, AUTO_PARTIAL, MANUAL_REVIEW, DECLINE_CREDIT, DECLINE_REVIEW
+  
+  createdAt   DateTime  @default(now())
+  
+  @@index([customerId])
+  @@index([score])
+}
+
+model CustomerRefundStats {
+  id            String    @id @default(uuid())
+  
+  customerId    String    @unique
+  customer      User      @relation(fields: [customerId], references: [id])
+  
+  // History
+  totalOrders   Int       @default(0)
+  totalRefunds  Int       @default(0)
+  refundRate    Float     @default(0) // totalRefunds / totalOrders
+  
+  // Risk classification
+  riskLevel     RiskLevel @default(LOW)
+  
+  // Amounts
+  totalRefundAmount   Decimal @default(0) @db.Decimal(10, 2)
+  totalOrderAmount    Decimal @default(0) @db.Decimal(10, 2)
+  
+  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime  @default(now())
+  
+  @@index([customerId])
+  @@index([riskLevel])
+}
+
+enum RiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+model FraudPattern {
+  id              String    @id @default(uuid())
+  
+  patternType     String    // REFUND_ABUSE, ACCOUNT_FARMING, DELIVERY_FRAUD, etc.
+  description     String
+  
+  // Detection stats
+  detectionCount  Int       @default(1)
+  confidence      Float     @default(0.5) // 0-1
+  
+  // Pattern details
+  indicators      Json      // [{ field: "refundRate", threshold: 0.1, operator: ">" }]
+  
+  // Status
+  isActive        Boolean   @default(true)
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  @@index([patternType])
+  @@index([isActive])
+}
+
+model RefundRequest {
+  id            String        @id @default(uuid())
+  
+  orderId       String        @unique
+  order         Order         @relation(fields: [orderId], references: [id])
+  
+  customerId    String
+  customer      User          @relation(fields: [customerId], references: [id])
+  
+  amount        Decimal       @db.Decimal(10, 2)
+  reason        RefundReason
+  reasonDetails String?
+  
+  // Risk assessment
+  riskScore     Int?
+  
+  // Status workflow
+  status        RefundStatus  @default(PENDING)
+  
+  // Review
+  reviewedBy    String?       // Admin user ID
+  reviewedAt    DateTime?
+  reviewNotes   String?
+  
+  // Resolution
+  decision      RefundDecision?
+  refundedAmount Decimal?
+  creditAmount  Decimal?      @db.Decimal(10, 2)
+  
+  // Stripe
+  stripeRefundId String?
+  
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  
+  @@index([customerId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+enum RefundReason {
+  MISSING_ITEMS
+  WRONG_ORDER
+  FOOD_QUALITY
+  LATE_DELIVERY
+  COLD_FOOD
+  DAMAGED_ITEMS
+  NEVER_ARRIVED
+  DRIVER_ISSUE
+  APP_ISSUE
+  OTHER
+}
+
+enum RefundStatus {
+  PENDING
+  AUTO_APPROVED
+  AUTO_PARTIAL
+  MANUAL_REVIEW
+  APPROVED
+  DECLINED
+  CREDIT_ISSUED
+}
+
+enum RefundDecision {
+  FULL_REFUND
+  PARTIAL_REFUND
+  CREDIT_ONLY
+  DECLINED
+  ESCALATED
+}
+
+model RefundHistory {
+  id            String    @id @default(uuid())
+  orderId       String
+  order         Order     @relation(fields: [orderId], references: [id])
+  
+  amount        Decimal   @db.Decimal(10, 2)
+  reason        String
+  processedAt   DateTime  @default(now())
+  processedBy   String?   // Admin or SYSTEM
+  
+  @@index([orderId])
+}
+
+// ============================================
+// ERROR CHARGES MODEL
+// ============================================
+
+model ErrorCharge {
+  id            String    @id @default(uuid())
+  
+  restaurantId  String
+  restaurant    Restaurant @relation(fields: [restaurantId], references: [id])
+  
+  orderId       String
+  
+  amount        Decimal   @db.Decimal(10, 2)
+  reason        ErrorReason
+  reasonDetails String?
+  
+  // Dispute workflow
+  disputed      Boolean   @default(false)
+  disputeStatus DisputeStatus @default(NA)
+  disputeReason String?
+  disputedAt    DateTime?
+  resolvedAt    DateTime?
+  resolvedBy    String?
+  resolution    String?
+  
+  // Financial
+  isDeducted    Boolean   @default(false)
+  deductedAt    DateTime?
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  @@index([restaurantId])
+  @@index([disputeStatus])
+}
+
+enum ErrorReason {
+  MISSING_ITEM
+  WRONG_ITEM
+  WRONG_ORDER
+  FOOD_SAFETY
+  QUALITY_ISSUE
+  PACKAGING
+  LATE_PREP
+  UNAVAILABLE_ITEM
+  CUSTOMER_COMPLAINT
+  OTHER
+}
+
+enum DisputeStatus {
+  NA
+  PENDING
+  UNDER_REVIEW
+  APPROVED
+  DENIED
+}
+
+// ============================================
+// PAYMENT & PAYOUT MODELS
+// ============================================
+
+model WeeklyTrueUp {
+  id            String    @id @default(uuid())
+  
+  driverId      String
+  driver        DriverProfile @relation(fields: [driverId], references: [id])
+  
+  weekStart     DateTime
+  weekEnd       DateTime
+  
+  // Prop 22 calculations
+  activeHours   Float     // Hours with delivery accepted
+  engagedHours  Float     // Time from accept to delivery
+  
+  minimumEarnings   Decimal   @db.Decimal(10, 2) // 120% of minimum wage * active hours
+  actualEarnings    Decimal   @db.Decimal(10, 2) // What they earned from deliveries
+  mileageCompensation Decimal @db.Decimal(10, 2) // $0.30/mile for engaged miles
+  
+  trueUpAmount  Decimal   @db.Decimal(10, 2) // max(0, minimumEarnings + mileageCompensation - actualEarnings)
+  
+  // Status
+  isPaid        Boolean   @default(false)
+  paidAt        DateTime?
+  stripeTransferId String?
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  @@unique([driverId, weekStart])
+  @@index([driverId])
+}
+
+// ============================================
+// AUDIT & LOGGING
+// ============================================
+
+model AuditLog {
+  id          String    @id @default(uuid())
+  
+  entityType  String    // Order, RefundRequest, User, etc.
+  entityId    String
+  action      String    // CREATED, UPDATED, STATUS_CHANGED, etc.
+  
+  actorId     String?   // User who performed action
+  actorType   String    // CUSTOMER, DRIVER, ADMIN, SYSTEM
+  
+  details     Json      // Action-specific details
+  
+  ipAddress   String?
+  userAgent   String?
+  
+  createdAt   DateTime  @default(now())
+  
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}

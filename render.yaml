@@ -1,0 +1,35 @@
+# Render Blueprint for Paradise Delivery
+# This creates all services with one click
+
+services:
+  # Main web service
+  - type: web
+    name: paradise-delivery
+    runtime: node
+    repo: https://github.com/YOUR_USERNAME/paradise-delivery
+    branch: main
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: JWT_SECRET
+        generateValue: true
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_PUBLISHABLE_KEY
+        sync: false
+      - key: GOOGLE_MAPS_API_KEY
+        sync: false
+    healthCheckPath: /api/health
+    autoDeploy: true
+    plan: free
+
+# Environment groups for sharing config
+envVarGroups:
+  - name: paradise-delivery-config
+    envVars:
+      - key: NODE_ENV
+        value: production
