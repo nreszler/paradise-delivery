@@ -6,9 +6,9 @@ services:
   - type: web
     name: paradise-delivery
     runtime: node
-    repo: https://github.com/YOUR_USERNAME/paradise-delivery
+    repo: https://github.com/nreszler/paradise-delivery
     branch: main
-    buildCommand: npm install
+    buildCommand: npm install && npm rebuild sqlite3
     startCommand: npm start
     envVars:
       - key: NODE_ENV
