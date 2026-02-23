@@ -2,13 +2,12 @@ services:
   - type: web
     name: paradise-delivery
     runtime: node
-    buildCommand: npm install
-    startCommand: npm start
+    buildCommand: echo "Build complete"
+    startCommand: node index.js
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
         value: 10000
     healthCheckPath: /api/health
-    autoDeploy: true
     plan: free
