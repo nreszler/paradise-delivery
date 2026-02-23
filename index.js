@@ -1,17 +1,28 @@
-console.log('STARTING');
+#!/usr/bin/env node
+console.log('>>> SCRIPT START');
+
 const http = require('http');
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
+
+console.log('>>> PORT:', PORT);
+console.log('>>> CWD:', process.cwd());
+console.log('>>> FILE:', __filename);
 
 const server = http.createServer((req, res) => {
-    if (req.url === '/api/health') {
-        res.writeHead(200, {'Content-Type': 'application/json'});
-        res.end(JSON.stringify({status: 'ok'}));
-    } else {
-        res.writeHead(200, {'Content-Type': 'text/plain'});
-        res.end('Paradise Delivery is running!\n');
-    }
+    console.log('>>> REQUEST:', req.url);
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'text/plain');
+    res.end('Hello from Paradise Delivery\n');
 });
 
-server.listen(port, '0.0.0.0', () => {
-    console.log('RUNNING ON PORT', port);
+console.log('>>> ABOUT TO LISTEN');
+
+server.listen(PORT, () => {
+    console.log('>>> SERVER RUNNING ON PORT', PORT);
 });
+
+server.on('error', (err) => {
+    console.error('>>> SERVER ERROR:', err);
+});
+
+console.log('>>> SETUP COMPLETE');
