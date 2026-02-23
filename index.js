@@ -26,7 +26,7 @@ const restaurant = {
     ]
 };
 
-// API Routes
+// API Routes - MUST come before static files
 app.get('/api/restaurants', (req, res) => {
     res.json([restaurant]);
 });
@@ -36,10 +36,9 @@ app.get('/api/restaurants/:id', (req, res) => {
 });
 
 app.get('/api/restaurants/:id/menu', (req, res) => {
-    res.json(restaurant.menu);
+    res.json({ restaurantId: req.params.id, menu: restaurant.menu });
 });
 
-// Stripe payment intent (mock for now)
 app.post('/api/payments/create-intent', (req, res) => {
     res.json({ 
         clientSecret: 'mock_secret_' + Date.now(),
@@ -47,13 +46,18 @@ app.post('/api/payments/create-intent', (req, res) => {
     });
 });
 
-// Root route
+// Static files - AFTER API routes
+app.use(express.static(__dirname));
+
+// Root route - LAST
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'app-final.html'));
 });
 
-// Static files
-app.use(express.static(__dirname));
+// 404 handler
+app.use((req, res) => {
+    res.status(404).json({ error: 'Not found', path: req.url });
+});
 
 app.listen(PORT, '0.0.0.0', () => {
     console.log('Server running on port', PORT);
