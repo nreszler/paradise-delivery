@@ -10,6 +10,11 @@ console.log('>>> PORT:', PORT);
 // Static files
 app.use(express.static(path.join(__dirname)));
 
+// Root route - serve the main website
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'app-final.html'));
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', time: new Date().toISOString() });
