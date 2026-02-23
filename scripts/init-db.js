@@ -1,88 +1,101 @@
-const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
 
-const dbPath = path.join(__dirname, '..', 'paradise.db');
-const schemaPath = path.join(__dirname, '..', 'database', 'schema.sql');
-
-console.log('🔄 Initializing database...');
-console.log('📁 Database path:', dbPath);
-console.log('📄 Schema path:', schemaPath);
-
-// Create database directory if it doesn't exist
-const dbDir = path.dirname(dbPath);
-if (!fs.existsSync(dbDir)) {
-    console.log('📂 Creating database directory...');
-    fs.mkdirSync(dbDir, { recursive: true });
-}
-
-// Check if database exists
-const dbExists = fs.existsSync(dbPath);
-
-const db = new sqlite3.Database(dbPath, (err) => {
-    if (err) {
-        console.error('❌ Error opening database:', err.message);
-        process.exit(1);
-    }
-    console.log('✅ Connected to SQLite database');
-});
-
-// Check if schema file exists
-if (!fs.existsSync(schemaPath)) {
-    console.error('❌ Schema file not found:', schemaPath);
+// Try to load sqlite3 with error handling
+let sqlite3;
+try {
+    sqlite3 = require('sqlite3').verbose();
+    console.log('✅ SQLite3 module loaded');
+} catch (err) {
+    console.error('❌ Failed to load sqlite3:', err.message);
     process.exit(1);
 }
 
-// Read and execute schema
-const schema = fs.readFileSync(schemaPath, 'utf8');
+// Use /tmp on Render (writable), otherwise use project root
+const isRender = process.env.RENDER === 'true' || process.env.RENDER_EXTERNAL_URL;
+const dbDir = isRender ? '/tmp' : path.join(__dirname, '..');
+const dbPath = path.join(dbDir, 'paradise.db');
+const schemaPath = path.join(__dirname, '..', 'database', 'schema.sql');
 
-// Split schema into individual statements
-const statements = schema.split(';').filter(stmt => stmt.trim().length > 0);
+console.log('🖥️  Environment:', isRender ? 'Render' : 'Local');
+console.log('💾 Database:', dbPath);
+console.log('📄 Schema:', schemaPath);
 
-let completed = 0;
-const total = statements.length;
-
-statements.forEach((statement, index) => {
-    db.run(statement + ';', (err) => {
-        completed++;
-        
-        if (err) {
-            // Ignore "already exists" errors
-            if (!err.message.includes('already exists')) {
-                console.error(`❌ Error executing statement ${index + 1}:`, err.message);
+async function initDatabase() {
+    console.log('🔄 Initializing database...');
+    
+    // Create directory
+    if (!fs.existsSync(dbDir)) {
+        console.log('📂 Creating directory...');
+        fs.mkdirSync(dbDir, { recursive: true });
+    }
+    
+    // Check schema exists
+    if (!fs.existsSync(schemaPath)) {
+        console.error('❌ Schema not found:', schemaPath);
+        process.exit(1);
+    }
+    
+    const dbExists = fs.existsSync(dbPath);
+    
+    return new Promise((resolve, reject) => {
+        const db = new sqlite3.Database(dbPath, (err) => {
+            if (err) {
+                console.error('❌ Error opening database:', err.message);
+                reject(err);
+                return;
             }
-        }
-        
-        if (completed === total) {
-            console.log('✅ Database schema initialized');
+            console.log('✅ Database connected');
             
-            // Seed demo data if new database
-            if (!dbExists) {
-                seedDemoData();
-            } else {
-                db.close();
-                console.log('🎉 Database ready!');
-            }
-        }
+            // Read and execute schema
+            const schema = fs.readFileSync(schemaPath, 'utf8');
+            const statements = schema.split(';').filter(s => s.trim().length > 0);
+            
+            let completed = 0;
+            let hasError = false;
+            
+            statements.forEach((stmt, i) => {
+                db.run(stmt + ';', (err) => {
+                    if (err && !err.message.includes('already exists')) {
+                        console.error(`❌ Statement ${i + 1} failed:`, err.message);
+                        hasError = true;
+                    }
+                    
+                    completed++;
+                    if (completed === statements.length) {
+                        if (hasError) {
+                            console.log('⚠️  Schema initialized with warnings');
+                        } else {
+                            console.log('✅ Schema initialized');
+                        }
+                        
+                        if (!dbExists) {
+                            seedDemoData(db).then(resolve).catch(reject);
+                        } else {
+                            db.close();
+                            console.log('🎉 Database ready!');
+                            resolve();
+                        }
+                    }
+                });
+            });
+        });
     });
-});
+}
 
-function seedDemoData() {
+async function seedDemoData(db) {
     console.log('🌱 Seeding demo data...');
     
     const demoData = `
-        -- Demo Restaurant: Maria's Kitchen
         INSERT INTO restaurants (id, name, description, cuisine_type, address, city, state, zip, phone, email, commission_rate, status, rating) 
         VALUES (1, 'Maria''s Kitchen', 'Authentic Mexican food made with love', 'Mexican', '6491 Clark Rd', 'Paradise', 'CA', '95969', '(530) 555-0123', 'maria@mariaskitchen.com', 18.00, 'active', 4.8);
         
-        -- Demo menu categories
         INSERT INTO menu_categories (id, restaurant_id, name, description, sort_order) VALUES
         (1, 1, 'Appetizers', 'Start your meal right', 1),
         (2, 1, 'Burritos', 'Our famous burritos', 2),
         (3, 1, 'Tacos', 'Street-style tacos', 3),
         (4, 1, 'Drinks', 'Refreshing beverages', 4);
         
-        -- Demo menu items
         INSERT INTO menu_items (id, restaurant_id, category_id, name, description, price, is_available, sort_order) VALUES
         (1, 1, 1, 'Chips & Guacamole', 'Fresh avocado, lime, cilantro, served with house-made tortilla chips', 6.99, 1, 1),
         (2, 1, 1, 'Queso Fundido', 'Melted cheese with chorizo, served with flour tortillas', 8.99, 1, 2),
@@ -94,34 +107,39 @@ function seedDemoData() {
         (8, 1, 4, 'Horchata (Large)', 'House-made rice drink with cinnamon', 3.99, 1, 1),
         (9, 1, 4, 'Mexican Coke', 'Made with real cane sugar', 3.49, 1, 2);
         
-        -- Demo restaurant hours
         INSERT INTO restaurant_hours (restaurant_id, day_of_week, open_time, close_time, is_closed) VALUES
-        (1, 0, '08:00', '21:00', 0), -- Sunday
-        (1, 1, '08:00', '21:00', 0), -- Monday
-        (1, 2, '08:00', '21:00', 0), -- Tuesday
-        (1, 3, '08:00', '21:00', 0), -- Wednesday
-        (1, 4, '08:00', '21:00', 0), -- Thursday
-        (1, 5, '08:00', '22:00', 0), -- Friday
-        (1, 6, '08:00', '22:00', 0); -- Saturday
+        (1, 0, '08:00', '21:00', 0), (1, 1, '08:00', '21:00', 0), (1, 2, '08:00', '21:00', 0),
+        (1, 3, '08:00', '21:00', 0), (1, 4, '08:00', '21:00', 0), (1, 5, '08:00', '22:00', 0), (1, 6, '08:00', '22:00', 0);
     `;
     
-    const seedStatements = demoData.split(';').filter(stmt => stmt.trim().length > 0);
-    
-    let seedCompleted = 0;
-    
-    seedStatements.forEach((statement) => {
-        db.run(statement + ';', (err) => {
-            seedCompleted++;
-            
-            if (err && !err.message.includes('UNIQUE constraint failed')) {
-                console.error('❌ Error seeding:', err.message);
-            }
-            
-            if (seedCompleted === seedStatements.length) {
-                db.close();
-                console.log('✅ Demo data seeded');
-                console.log('🎉 Database ready with demo restaurant!');
-            }
+    return new Promise((resolve, reject) => {
+        const statements = demoData.split(';').filter(s => s.trim().length > 0);
+        let completed = 0;
+        
+        statements.forEach((stmt) => {
+            db.run(stmt + ';', (err) => {
+                if (err && !err.message.includes('UNIQUE constraint failed')) {
+                    console.error('❌ Seed error:', err.message);
+                }
+                completed++;
+                if (completed === statements.length) {
+                    db.close();
+                    console.log('✅ Demo data seeded');
+                    console.log('🎉 Database ready with demo restaurant!');
+                    resolve();
+                }
+            });
         });
     });
 }
+
+// Run initialization
+initDatabase()
+    .then(() => {
+        console.log('✅ Database initialization complete');
+        process.exit(0);
+    })
+    .catch((err) => {
+        console.error('❌ Database initialization failed:', err.message);
+        process.exit(1);
+    });
