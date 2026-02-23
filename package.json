@@ -4,7 +4,7 @@
   "description": "Backend API for Paradise Delivery",
   "main": "server.js",
   "scripts": {
-    "start": "node scripts/init-db.js && node server.js",
+    "start": "node server.js",
     "dev": "node scripts/init-db.js && nodemon server.js",
     "test": "node test-integration.js",
     "init-db": "node scripts/init-db.js",

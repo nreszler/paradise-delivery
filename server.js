@@ -1,3 +1,4 @@
+try {
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -5,6 +6,8 @@ const morgan = require('morgan');
 const compression = require('compression');
 const path = require('path');
 require('dotenv').config();
+
+console.log('✅ Modules loaded successfully');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -61,3 +64,9 @@ app.listen(PORT, () => {
 });
 
 module.exports = app;
+
+} catch (err) {
+    console.error('❌ FATAL ERROR during startup:', err.message);
+    console.error(err.stack);
+    process.exit(1);
+}
